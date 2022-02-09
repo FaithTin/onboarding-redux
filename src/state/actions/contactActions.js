@@ -1,12 +1,12 @@
 import { GET_CONTACT_LIST,ADD_NEW_CONTACT,CLEAN_ALERTS,UPDATE_CONTACT_DETAILS,
     DELETE_CONTACTS,CLEAN_CONTACT_DETAILS,CLEAN_CONTACT,SET_CONTACT_DETAILS,ALERT_ERROR } from "../action-types";
-import { reset } from "redux-form";
 import { fetchData } from "../../api";
+import { reset } from "redux-form";
 
 
 export const getContactList = () => async (dispatch) => {
     try {
-        const res = await fetchData.get("http://malih-auth.ap-southeast-2.elasticbeanstalk.com/campaign/getAllUploadedEmails/listId/480");
+        const res = await fetchData.get("http://malih-auth.ap-southeast-2.elasticbeanstalk.com/api/v1/getAllUploadedEmails/listId/480");
         const contacts = res.data;
         contacts.reverse();
         dispatch({
@@ -29,13 +29,13 @@ export const addNewContact = (formValues) => async (dispatch) => {
    
     dispatch(reset("contactForm"));
     try {
-        await fetchData.post("http://malih-auth.ap-southeast-2.elasticbeanstalk.com/campaign/emailUpload", [
+        await fetchData.post("/emailUpload", [
             {
                 ...formValues,
                 listId: 480,
             },
         ]);
-        const res = await fetchData.get("http://malih-auth.ap-southeast-2.elasticbeanstalk.com/campaign/emailUpload");
+        const res = await fetchData.get("https://cors-anywhere.herokuapp.com/http://malih-auth.ap-southeast-2.elasticbeanstalk.com/api/v1/emailUpload");
         dispatch({
             type: ADD_NEW_CONTACT,
             payload: {
@@ -74,7 +74,7 @@ export const updateContactDetails = (formValues) => async (dispatch) => {
 export const deleteContacts = (contactIds) => async (dispatch) => {
     try {
         await fetchData.delete("/deleteEmails", {
-            data: contactIds, 
+            data: contactIds,
         });
         dispatch({
             type: DELETE_CONTACTS,
